@@ -46,9 +46,62 @@ def find_worst_fit(size):
       if diff > max_diff:
         max_diff = diff
         worst_fit_index = i
- 
+   
   return worst_fit_index
 
+# allocating a memory portion with size using the specific strategy algorithm
+def allocate_memory(process, size, strategy):
+  global memory
+  if strategy == 'F':
+    index = find_first_fit(size)
+  elif strategy == 'B':
+    index = find_best_fit(size)
+  elif strategy == 'W':
+    index = find_worst_fit(size)
+  else:
+    print('Invalid allocation strategy.')
+    return
+
+  if index == -1:
+    print(f'Error: Not enough memory for process {process}')
+    return
+
+  if memory[index]['size'] == size:
+    memory[index]['process'] = process
+  else:
+    new_block = {
+        'start': memory[index]['start'],
+        'size': size,
+        'process': process
+    }
+    memory[index]['start'] += size
+    memory[index]['size'] -= size
+    memory.insert(index, new_block)
+
+
+
+def release_memory(process):
+  global memory
+  for i, block in enumerate(memory):
+    if block['process'] == process:
+      block['process'] = None
+      merge_free_blocks(i)
+      return
+  print(f'Error: Process {process} not found.')
+
+
+def merge_free_blocks(index):
+  global memory
+
+  # check with the next block
+  if (index + 1 < len(memory) and memory[index + 1]['process'] is None):
+    memory[index]['size'] += memory[index + 1]['size']
+    memory.pop(index + 1)
+
+  # check with the previous block
+  if index - 1 >= 0 and memory[index - 1]['process'] is None:
+    memory[index - 1]['size'] += memory[index]['size']
+    memory.pop(index)
 
 if __name__ == "__main__":
   import sys
