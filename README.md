@@ -2,6 +2,10 @@
 
 This program simulates contiguous memory allocation using first-fit, best-fit, and worst-fit algorithms. It supports requesting, releasing, and compacting memory, and provides a status report.
 
+## Video Tutorial
+
+https://github.com/user-attachments/assets/afea7d90-ac59-45f6-bace-2ed5fca228e9
+
 ## Features
 
 - Implements first-fit, best-fit, and worst-fit allocation strategies.
