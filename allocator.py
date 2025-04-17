@@ -104,8 +104,21 @@ def merge_free_blocks(index):
     memory.pop(index)
 
 
+# compaction to move all empty memory blocks to the end of the memory to provide one single large empty 
+# block available for new processes to allocate
+def compact_memory():
+  global memory, memory_size
+  offset = 0
+  for block in memory:
+    if block['process'] is not None:
+      block['start'] = offset;
+      offset += block['size']
 
-
+  new_memory = [block for block in memory if block['process'] is not None]
+  free_size = memory_size - offset
+  if free_size > 0:
+    new_memory.append({'start': offset, 'size': free_size, 'process': None})
+  memory = new_memory
 
 
 # printing a report of the memory status, blocks available, block allocated, and unused memory spaces along with its addresses. 
