@@ -103,6 +103,53 @@ def merge_free_blocks(index):
     memory[index - 1]['size'] += memory[index]['size']
     memory.pop(index)
 
+
+
+
+
+
+# printing a report of the memory status, blocks available, block allocated, and unused memory spaces along with its addresses. 
+def report_status():
+  global memory
+  print('Current Memory Status:')
+  for block in memory:
+    status = f'Process {block["process"]}' if block['process'] else 'Unused'
+    print(
+        f'Addresses [{block["start"]}:{block["start"] + block["size"] - 1}] {status}')
+ 
+ 
+# reading user commands after creating the initializing the memory
+def execute_command(command):
+  parts = command.split()
+  action = parts[0]
+ 
+  if action == 'RQ':
+    if len(parts) == 4:
+      process = parts[1]
+      size = int(parts[2])
+      strategy = parts[3]
+      allocate_memory(process, size, strategy)
+    else:
+      print('Invalid RQ command format.')
+  elif action == 'RL':
+    if len(parts) == 2:
+      process = parts[1]
+      release_memory(process)
+    else:
+      print('Invalid RL command format.')
+  elif action == 'C':
+    compact_memory()
+  elif action == 'STAT':
+    report_status()
+  elif action == 'X':
+    print('Exiting memory allocator.')
+    exit()
+  else:
+    print('Invalid command.')
+
+
+
+
 if __name__ == "__main__":
   import sys
 
